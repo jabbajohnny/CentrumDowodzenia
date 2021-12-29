@@ -2,6 +2,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Embeds{
 
@@ -35,6 +39,16 @@ public class Embeds{
 
         Tasks.taskContents.put(Tasks.taskCount, new Task("Zadanie #" + Tasks.taskCount, "Dodane przez: " + event.getAuthor().getName(), content.toString(), false));
 
+        Files.createDirectory(Paths.get("D:\\IDEAPROJECTS\\kolkofizyczne\\src\\SpaceshipTasks\\task" +Tasks.taskCount));
+
+        File info = new File("D:\\IDEAPROJECTS\\kolkofizyczne\\src\\SpaceshipTasks\\task" + Tasks.taskCount + "\\task" + Tasks.taskCount + ".txt");
+
+        if(!info.exists()) info.createNewFile();
+
+        FileWriter writer = new FileWriter(info);
+        writer.write(builder.toString());
+        writer.close();
+
         return builder;
     }
 
@@ -43,7 +57,7 @@ public class Embeds{
         builder.setTitle("Błąd");
         builder.setAuthor("System");
         builder.setColor(Color.RED);
-        builder.setDescription("Wprowadzona komenda jest nieprawidłowa :( " + '\n' + "Poprawny format: !complete *numer zadania*" + '\n' + "**Pamiętaj, żeby do wiadomości dołączyć plik z rozwiązaniem**");
+        builder.setDescription("Wprowadzona komenda jest nieprawidłowa :( " + '\n' + "Poprawny format: !complete *numer zadania* *link do githuba*" + '\n' );
         return builder;
     }
 
@@ -57,12 +71,12 @@ public class Embeds{
         return builder;
     }
 
-    public static EmbedBuilder noAttachmentError(){
+    public static EmbedBuilder noLinkError(){
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("Nie dołączyłeś pliku do rozwiązania");
+        builder.setTitle("Nie dołączyłeś linku do githuba w twojej wiadomości");
         builder.setAuthor("System");
         builder.setColor(Color.RED);
-        builder.setDescription("Spróbuj ponownie z dołączonym plikiem z kodem :)");
+        builder.setDescription("Spróbuj ponownie z dołączonym :)");
         return builder;
     }
 }

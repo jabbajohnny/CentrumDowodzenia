@@ -43,53 +43,36 @@ public class Events extends ListenerAdapter {
                 }
 
             case Bot.prefix + "complete" :
-                if(message.length != 2 && message[0].equals(Bot.prefix + "complete")){
+                if(message.length != 3 && message[0].equals(Bot.prefix + "complete")){
                     event.getChannel().sendMessage(Embeds.wrongFormat().build()).queue();
                 }else{
                     Task task = Tasks.taskContents.get(Long.parseLong(message[1]));
 
                     if(!task.isComplete) {
 
-                        EmbedBuilder builder = new EmbedBuilder();
-                        builder.setTitle(task.title);
-                        builder.setAuthor(task.author);
-                        builder.setDescription(task.description);
-                        builder.setFooter("Zadanie wykonane przez " + event.getMessage().getAuthor().getName());
-                        builder.setColor(Color.green);
+                        if(!message[2].contains("github.com")){
+                            event.getChannel().sendMessage(Embeds.noLinkError().build()).queue();
+                        }else {
+                            EmbedBuilder builder = new EmbedBuilder();
+                            builder.setTitle(task.title);
+                            builder.setAuthor(task.author);
+                            builder.setDescription(task.description + '\n' + '\n' + "**Github:** " + message[2]);
+                            builder.setFooter("Zadanie wykonane przez " + event.getMessage().getAuthor().getName());
+                            builder.setColor(Color.green);
 
+                            channel.editMessageById(Tasks.tasks.get(Long.parseLong(message[1])), builder.build()).queue();
 
-                        List<Message.Attachment> attachments = null;
-                        try {
+                            task.isComplete = true;
 
-                            attachments = event.getMessage().getAttachments();
+                            Tasks.taskContents.put(Long.parseLong(message[1]), task);
 
-                            Tasks.fileCount++;
+                            Level.levelXP += 20;
 
-                            CompletableFuture<File> future = attachments.get(0).downloadToFile(Tasks.fileCount + attachments.get(0).getFileName());
-                            future.exceptionally(error -> { // handle possible errors
-                                error.printStackTrace();
-                                return null;
-                            });
-
-                        }catch (Exception e){
-                            event.getChannel().sendMessage(Embeds.noAttachmentError().build()).queue();
-                        }
-
-                        File file = new File(Tasks.fileCount + attachments.get(0).getFileName());
-
-
-                        channel.editMessageById(Tasks.tasks.get(Long.parseLong(message[1])), builder.build()).addFile(file).queue(message1 -> message1.removeReaction("✅"));
-
-                        task.isComplete = true;
-
-                        Tasks.taskContents.put(Long.parseLong(message[1]), task);
-
-                        Level.levelXP += 20;
-
-                        try {
-                            Tasks.saveList();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            try {
+                                Tasks.saveList();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }else{
                         event.getChannel().sendMessage(Embeds.completedInfo().build()).queue();
