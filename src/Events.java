@@ -4,16 +4,14 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+
 
 
 public class Events extends ListenerAdapter {
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent event){
         String[] message = event.getMessage().getContentRaw().split(" ");
-        TextChannel channel = Bot.jda.getTextChannelById("923266842460581940");
+        TextChannel channel = Bot.jda.getTextChannelById("923163459686903828");
 
         switch(message[0]){
 
@@ -43,20 +41,17 @@ public class Events extends ListenerAdapter {
                 }
 
             case Bot.prefix + "complete" :
-                if(message.length != 3 && message[0].equals(Bot.prefix + "complete")){
+                if(message.length != 2 && message[0].equals(Bot.prefix + "complete")){
                     event.getChannel().sendMessage(Embeds.wrongFormat().build()).queue();
                 }else{
                     Task task = Tasks.taskContents.get(Long.parseLong(message[1]));
 
                     if(!task.isComplete) {
 
-                        if(!message[2].contains("github.com")){
-                            event.getChannel().sendMessage(Embeds.noLinkError().build()).queue();
-                        }else {
                             EmbedBuilder builder = new EmbedBuilder();
                             builder.setTitle(task.title);
                             builder.setAuthor(task.author);
-                            builder.setDescription(task.description + '\n' + '\n' + "**Github:** " + message[2]);
+                            builder.setDescription(task.description + '\n' + '\n' + "**Github:** https://github.com/JabbaJohnny/kolkofizyczne/tree/main/src/SpaceshipTasks/task" + message[1]);
                             builder.setFooter("Zadanie wykonane przez " + event.getMessage().getAuthor().getName());
                             builder.setColor(Color.green);
 
@@ -74,14 +69,19 @@ public class Events extends ListenerAdapter {
                                 e.printStackTrace();
                             }
                         }
-                    }else{
-                        event.getChannel().sendMessage(Embeds.completedInfo().build()).queue();
+
                     }
                     break;
-                }
+
+            case Bot.prefix + "taskInit" :
+                channel.sendMessage(Embeds.taskChannelMessageInit().build()).queue();
+                break;
+        }
+
+
 
 
         }
     }
 
-}
+

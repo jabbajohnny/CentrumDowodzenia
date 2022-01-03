@@ -57,7 +57,7 @@ public class Embeds{
         builder.setTitle("Błąd");
         builder.setAuthor("System");
         builder.setColor(Color.RED);
-        builder.setDescription("Wprowadzona komenda jest nieprawidłowa :( " + '\n' + "Poprawny format: !complete *numer zadania* *link do githuba*" + '\n' );
+        builder.setDescription("Wprowadzona komenda jest nieprawidłowa :( " + '\n' + "Poprawny format: !complete *numer zadania*" + '\n' );
         return builder;
     }
 
@@ -77,6 +77,22 @@ public class Embeds{
         builder.setAuthor("System");
         builder.setColor(Color.RED);
         builder.setDescription("Spróbuj ponownie z dołączonym :)");
+        return builder;
+    }
+
+    public static EmbedBuilder taskChannelMessageInit(){
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setTitle("Tasks");
+        builder.setAuthor("System");
+        builder.setColor(new Color(51, 85, 255));
+        builder.setImage("https://images.pexels.com/photos/2004161/pexels-photo-2004161.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940");
+        builder.setDescription("Na tym kanale znajdziesz wszystkie regularne zadania. \n" +
+                "\n" +
+                ":rocket:  **Dodawanie zadania:** !task *treść zadania*\n" +
+                "\n" +
+                ":white_check_mark:  **Oznaczenia zadania jako ukończone:** !complete *numer zadania*\n" +
+                "\n" +
+                ":black_cat:  **Nasze zadania na GitHubie:** https://github.com/jabbajohnny/kolkofizyczne");
         return builder;
     }
 }
